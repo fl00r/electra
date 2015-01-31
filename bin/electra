@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+require 'rack'
+require 'mime-types'
+
+app = Proc.new do |env|
+  file = File.join(Dir.pwd, env['REQUEST_PATH'])
+  if File.exist? file
+    ['200', {'Content-Type' => MIME::Types.type_for(file).first.to_s}, [File.read(file)]]
+  else
+    ['404', {'Content-Type' => "plain/text"}, ["File not found"]]
+  end
+end
+ 
+Rack::Handler::WEBrick.run app
